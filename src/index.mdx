@@ -1,0 +1,383 @@
+import { CodeSurferLayout } from "code-surfer";
+import { Head, Appear, Notes, Image } from 'mdx-deck';
+import { Listed, Broke, Fronted, BackgroundImaged } from './layouts';
+import { codeSurferTitle, Ul, Li, MetaList  } from './components';
+import './init';
+
+export { theme } from './themes/lundegaardNew';
+
+<Head>
+	 <title>Gatby - cool React tool</title>
+</Head>
+
+<Fronted>
+
+# Gatsby
+
+## cool-React-tool
+
+- Tomáš Konrády
+- <a href="https://twitter.com/konnnyy">@konnnyy</a>
+
+Lundegaard & MiniCon 2019
+
+<br />
+
+<Notes>
+
+## Guide
+
+</Notes>
+
+</Fronted>
+
+---
+
+<Listed dense>
+
+##  Guide
+
+- Basic idea
+- Plugins & Themes
+
+</Listed>
+
+---
+
+<Broke>
+
+# React aplikace & CMS
+
+</Broke>
+
+---
+
+## Headless CMS
+
+```
+.-----.       .---------.       .---------.
+|     |       |         |       |         |
+| APP | <~~~> | CMS API | <~~~> | CMS APP |
+|     |       |         |       |         |
+'-----'       '---------'       '---------'
+```
+
+
+
+<Notes>
+integrating or plugging CMS data into APP
+</Notes>
+
+---
+
+## Gatsby + Wordpress
+
+```
+.------.          .----.           .--------.
+|      |          |    |           |        |
+| USER | ~~~~~~~> | WP | ~~~~~~~~> | GATSBY |
+|      | Publish  |    |  Trigger  |        |
+'------' content  '----'   build   '--------'
+                                       ! Generate
+                                       v
+                                .-------------.
+                                | STATIC SITE |
+                                '-------------'
+```
+---
+
+<BackgroundImaged src="images/jam.jpg">
+
+# JAM stack
+
+</BackgroundImaged>
+
+---
+
+<Listed>
+
+## Nevýhody
+
+- Chybějící ekosystém daného CMS
+- Omezené možnosti pro správce obsahu
+- Opožděné live preview
+- Ne každé CMS podporuje headless
+
+</Listed>
+
+---
+
+## Výhody
+
+Vše ostatní... 🙂
+
+---
+
+<BackgroundImaged src="images/lfrbg.jpg" >
+
+# Trochu jiný use case
+
+</BackgroundImaged>
+
+---
+
+<Listed>
+
+## Požadavky
+
+- Přidání vlastních **widgetů**
+- CMS agnostic
+- Velikost produkčního balíčku
+- Několik instancí na stránce
+
+</Listed>
+
+---
+
+<Broke color="green">
+
+# Příklad
+
+</Broke>
+
+---
+
+<BackgroundImaged src="images/appscreenshot.png" size="cover" >
+
+# 🤘 **Metal** Chart 🤘
+
+<Notes>
+Lordi, Sonata Artica, Nightwish, Children of Bodom
+</Notes>
+
+</BackgroundImaged>
+
+---
+
+<Broke color="blue">
+
+# React-union
+
+</Broke>
+
+---
+
+<CodeSurferLayout>
+
+```html title="Widget descriptor"
+<div id="chart-container"></div>
+
+<script
+  data-union-widget="chart"
+  data-union-container="chart-container"
+>
+</script>
+```
+
+</CodeSurferLayout>
+
+---
+
+<CodeSurferLayout>
+
+```html title="Předání dat"
+<div id="chart-container"></div>
+
+<script
+  data-union-widget="chart"
+  data-union-container="chart-container"
+  type="application/json"
+>
+{
+  "type": "dark"
+}
+</script>
+```
+
+</CodeSurferLayout>
+
+---
+
+<CodeSurferLayout>
+
+```html title="Předání společné konfigurace"
+<script data-union-common="" type="application/json">
+{
+  "api": "http://example.com/api"
+}
+</script>
+```
+
+</CodeSurferLayout>
+
+---
+
+<CodeSurferLayout>
+
+```js title="Route"
+const routes = [
+  {
+    component: React.lazy(() => import('./Chart')),
+    path: 'chart',
+  },
+];
+```
+
+</CodeSurferLayout>
+
+---
+
+<CodeSurferLayout>
+
+```jsx title="Union"
+import { Union } from 'react-union';
+
+<Union routes={routes} />;
+```
+
+</CodeSurferLayout>
+
+---
+
+<CodeSurferLayout>
+
+```jsx title="Společný kontext"
+<ReduxProvider store={store}>
+  <IntlProvider messages={messages} locale={locale}>
+    <Rebass theme={darkTheme}>
+      <Union routes={routes} />
+    </Rebass>
+  </IntlProvider>
+</ReduxProvider>
+```
+
+</CodeSurferLayout>
+
+---
+
+<Broke>
+
+# Modulární state management
+
+</Broke>
+
+---
+
+<Broke color="white">
+
+# [@redux-tools](https://github.com/lundegaard/redux-tools)
+
+</Broke>
+
+---
+
+<Listed>
+
+## Features
+
+- Lokální stav v Redux
+- Adhoc injektování reducerů, ...
+- Utility
+
+</Listed>
+
+---
+
+```
+@redux-tools/actions
+@redux-tools/reducers
+@redux-tools/reducers-react
+@redux-tools/middleware
+@redux-tools/middleware-react
+...
+```
+---
+
+## Global state
+
+```js
+{
+	entities: {
+		songs: {
+			1: { id: 1, name: "Nemo", ...
+		}
+	}, ...
+
+```
+---
+
+## Local (UI) state
+
+```js
+	songs: {
+		visibleIds: [1, 2, 3],
+		pagination: { page: 1, total: 200, ... },
+	}, ...
+}
+```
+---
+
+## Namespaced local state
+
+```js
+	namespaces: {
+		songs-namespace1: {
+			visibleIds: [1, 2, 3],
+			pagination: { page: 1, total: 200, ... },
+		},
+		songs-namespace2: {
+			visibleIds: [2],
+			pagination: { page: 1, total: 200, ... },
+		}, ...
+	}
+}
+```
+
+---
+
+<CodeSurferLayout>
+
+```jsx title="Ad-hoc Injecting"
+import { Provider, withReducers } from '@redux-tools/reducers-react';
+import { withMiddleware } from '@redux-tools/middleware-react';
+
+const Chart = compose(
+  withMiddleware({ myMiddleware }),
+  withReducer({ myReducer })
+)(ChartUI);
+
+<Provider namespace="chart-1">
+  <Chart />
+</Provider>
+```
+
+</CodeSurferLayout>
+
+---
+
+<Broke color="green">
+
+# Příklad
+
+</Broke>
+
+---
+
+<Listed>
+
+## Zdroje
+
+- [react-union.org](https://react-union.org)
+- [github.com/lundegaard/redux-tools](https://github.com/lundegaard/redux-tools)
+- [github.com/lundegaard](https://github.com/lundegaard)
+- [ramdajs.com](https://ramdajs.com)
+- [github.com/tommmyy/ramda-extension](https://github.com/tommmyy/ramda-extension)
+
+</Listed>
+
+---
+
+# Demo + slides
+
+- [@konnnyy](https://twitter.com/konnnyy")
+

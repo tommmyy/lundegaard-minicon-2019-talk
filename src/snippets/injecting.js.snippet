@@ -1,0 +1,11 @@
+import { Provider, withReducers } from '@redux-tools/reducers-react';
+import { withMiddleware } from '@redux-tools/middleware-react';
+
+const Chart = compose(
+  withMiddleware({ myMiddleware })
+  withReducer({ myReducer })
+)(ChartUI);
+
+<Provider namespace="chart-1">
+  <Chart />
+</Provider>
